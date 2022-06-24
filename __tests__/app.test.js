@@ -34,14 +34,18 @@ describe('gitty from scratch routes', () => {
   it('should return a list of posts for authenticated user', async () => {
     const appAgent = request.agent(app);
     const expected = 'Post 1';
-    let res = await request
-      .agent(app)
+    let res = await appAgent
       .get('/api/v1/github/callback?code=42')
       .redirects(1);
     res = await appAgent
       .get('/api/v1/posts');
-    console.log(res.body);
     expect(res.body[0].title).toEqual(expected);
+  });
+  it('should log out a user', async () => {
+    const appAgent = request.agent(app);
+    const res = await appAgent
+      .delete('/api/v1/github/sessions')
+    expect(res.body).toEqual({ success: true, message: 'Signed out successfully!' });
   });
   afterAll(() => {
     pool.end();
