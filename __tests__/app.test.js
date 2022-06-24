@@ -41,6 +41,14 @@ describe('gitty from scratch routes', () => {
       .get('/api/v1/posts');
     expect(res.body[0].title).toEqual(expected);
   });
+  it('should allow a user to post, only if they are logged in', async () => {
+    const appAgent = request.agent(app);
+    const expected = 'Post 2';
+    const res = await appAgent
+      .post('/api/v1/posts')
+      .send({ title: 'Post 2', content: 'This is the second test post' });
+    expect(res.body.title).toEqual(expected);
+  });
   it('should log out a user', async () => {
     const appAgent = request.agent(app);
     const res = await appAgent
