@@ -44,15 +44,18 @@ describe('gitty from scratch routes', () => {
   it('should allow a user to post, only if they are logged in', async () => {
     const appAgent = request.agent(app);
     const expected = 'Post 2';
-    const res = await appAgent
-      .post('/api/v1/posts')
+    let res = await appAgent
+      .get('/api/v1/github/callback?code=42')
+      .redirects(1);
+    res = await appAgent
+      .post('/api/v1/posts/')
       .send({ title: 'Post 2', content: 'This is the second test post' });
     expect(res.body.title).toEqual(expected);
   });
   it('should log out a user', async () => {
     const appAgent = request.agent(app);
     const res = await appAgent
-      .delete('/api/v1/github/sessions')
+      .delete('/api/v1/github/sessions');
     expect(res.body).toEqual({ success: true, message: 'Signed out successfully!' });
   });
   afterAll(() => {
