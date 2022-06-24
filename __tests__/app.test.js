@@ -31,6 +31,17 @@ describe('gitty from scratch routes', () => {
       exp: expect.any(Number),
     });
   });
+  it('should return a list of posts for authenticated user', async () => {
+    const agent = request.agent(app);
+    const expected = 'Post 1';
+    let res = await request
+      .agent(app)
+      .get('/api/v1/github/callback?code=42')
+      .redirects(1);
+    res = await agent
+      .get('/api/v1/posts');
+    expect(res.body[0].title).toEqual(expected);
+  });
   afterAll(() => {
     pool.end();
   });
